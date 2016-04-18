@@ -143,8 +143,8 @@ int main() {
 	// ELLPACK
 
 	int maxnz = m2.getMaxnz();
-	vector< vector<int> vJa = m2.getJa();
-	vector< vector<double> > vAs = m2.getAs();
+	vector< vector<int> > vJaEll = m2.getJa();
+	vector< vector<double> > vAsEll = m2.getAs();
 
 	ja = (int *)malloc((m2.getRows() * maxnz) * sizeof(int));
 	as = (double *)malloc((m2.getRows() * maxnz) * sizeof(double));
@@ -153,8 +153,8 @@ int main() {
 
 	for (int i = 0; i < m2.getRows(); i++) {
 		for (int i = 0; i < maxnz; i++) {
-			as[i * maxnz + j] = vAs[i][j];
-			ja[i * max + j] = vJa[i][j];
+			as[i * maxnz + j] = vAsEll[i][j];
+			ja[i * max + j] = vJaEll[i][j];
 		}
 	}
 	for (int i = 0; i < m2.getCols(); i++) {
