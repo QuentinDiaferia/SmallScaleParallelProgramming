@@ -53,7 +53,7 @@ int main() {
 	vector<int> vJa = m.getJa();
 	vector<double> vAs = m.getAs();
 
-	irp = (int *)malloc(m.getRows() + 1 * sizeof(int));
+	irp = (int *)malloc((m.getRows() + 1 ) * sizeof(int));
 	ja = (int *)malloc(m.getNz() * sizeof(int));
 	as = (double *)malloc(m.getNz() * sizeof(double));
 	v = (double *)malloc(m.getRows() * sizeof(double));
@@ -71,13 +71,13 @@ int main() {
 		as[i] = vAs[i];
 	}
 
-	cudaMalloc((void**)&_irp, sizeof(int) * m.getRows());
+	cudaMalloc((void**)&_irp, sizeof(int) * (m.getRows() + 1));
 	cudaMalloc((void**)&_ja, sizeof(int) * m.getNz());
 	cudaMalloc((void**)&_as, sizeof(double) * m.getNz());
 	cudaMalloc((void**)&_v, sizeof(double) * m.getRows());
 	cudaMalloc((void**)&_result, sizeof(double) * m.getRows());
 
-	cudaMemcpy(_irp, irp, sizeof(int) * m.getRows(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_irp, irp, sizeof(int) * (m.getRows() + 1), cudaMemcpyHostToDevice);
 	cudaMemcpy(_ja, ja, sizeof(int) * m.getNz(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_as, as, sizeof(double) * m.getNz(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_v, v, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
@@ -104,7 +104,7 @@ int main() {
 	cudaFree(_result);
 
 	cout << "free irp..." << endl;
-	//free(irp);
+	free(irp);
 	cout << "free ja..." << endl;
 	free(ja);
 	cout << "free as..." << endl;
