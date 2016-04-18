@@ -11,7 +11,7 @@
 
 using namespace std;
 
-__host__ 
+__global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int row = blockDim.x * blockIdx.x + threadIdx.x;
 	if (row < rows) {
