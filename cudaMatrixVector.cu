@@ -11,13 +11,13 @@ using namespace std;
 
 __global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
-	int row = blockDim.x * blockIdx.x + threadIdx.x;
-	if (row < rows) {
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	if (i < rows) {
 		double sum = 0;
-		for (int j = irp[row]; j < irp[row + 1]; j++) {
-			sum += as[j] * v[ja[j]];
+		for (int j = irp[i]; j < irp[i + 1]; j++) {
+			sum += as[j] * v[ja[j-1]];
 		}
-		result[row] += sum ;
+		result[i] += sum ;
 	}
 
 	/*
@@ -104,7 +104,7 @@ int main() {
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
 	int BLOCK_DIM = 128;
-	const dim3 GRID_DIM =((m.getRows() - 1)/128 + 1,(m.getCols() - 1)/128 + 1);
+	const dim3 GRID_DIM =((m.getRows() - 1)/128 + 1, (m.getCols() - 1)/128 + 1);
 
 	total_time = 0.0;
 	for (int i = 0; i < 10; i++) {
