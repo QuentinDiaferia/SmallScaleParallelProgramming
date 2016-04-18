@@ -124,7 +124,7 @@ int main() {
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < m.getRows(); i++)
-		cout << result[i] << endl;
+		cout << v[i] << endl;
 
 	cout << endl << "average time  : " << total_time << endl;
 	cout << "FLOPS  : " << 2 * m.getNz() / total_time << endl << endl;
