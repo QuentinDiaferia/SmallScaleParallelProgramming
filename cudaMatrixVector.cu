@@ -10,7 +10,7 @@
 using namespace std;
 
 __global__ 
-void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
+void CSRMult(const int *irp, const int *ja, const double *as, const double *v, double *result, const int rows) {
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
 	if (i < rows) {
 		double sum = 0;
@@ -22,9 +22,9 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 }
 
 __global__ 
-void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *result, const int rows) {
+void ELLPACKMult(const int maxnz, const int *ja, const double *as, const double *v, double *result, const int rows) {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
-	if(i < rows)	{
+	if(i < rows) {
 		double sum = 0;
 		for(int j = 0; j < maxnz; j++) {
 			sum += as[i * maxnz + j] * v[ja[i * maxnz + j]];
@@ -125,8 +125,6 @@ int main() {
 
 	cout << "FLOPS  : " << 2 * m.getNz() / time_cpu << endl << endl;
 
-
-
 	cudaFree(_irp);
 	cudaFree(_ja);
 	cudaFree(_as);
@@ -164,8 +162,8 @@ int main() {
 		result[i] = 0.0;
 	}
 
-	cudaMalloc((void**)&_ja, sizeof(int) * m.getNz());
-	cudaMalloc((void**)&_as, sizeof(double) * m.getNz());
+	cudaMalloc((void**)&_ja, sizeof(int) * (m2.getRows() * maxnz));
+	cudaMalloc((void**)&_as, sizeof(double) * (m2.getRows() * maxnz));
 	cudaMalloc((void**)&_v, sizeof(double) * m.getCols());
 	cudaMalloc((void**)&_result, sizeof(double) * m.getRows());
 
@@ -194,8 +192,6 @@ int main() {
 		cout << result[i] << endl;
 
 	cout << "FLOPS  : " << 2 * m.getNz() / time_cpu << endl << endl;
-
-
 
 	cudaFree(_ja);
 	cudaFree(_as);
