@@ -21,7 +21,6 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 			res[i] += as[j] * v[ja[j]];
 		}
 	}
-	return res;
 }
 
 int main() {
