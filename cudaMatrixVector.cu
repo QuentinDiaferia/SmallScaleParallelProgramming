@@ -13,6 +13,7 @@ __global__
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
 	if (i < rows) {
+		double sum = 0;
 		for (int j = irp[i]; j < irp[i + 1]; j++) {
 			sum += as[j] * v[ja[j-1]];
 		}
