@@ -11,16 +11,17 @@
 
 using namespace std;
 
-__global__ 
+__host__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
-	int row = blockDim.x * blockIdx.x + threadIdx.x;
-	if (row < rows) {
+
+	for (int row = 0; i < rows; i++){
 		double sum = 0;
 		for (int j = irp[row]; j < irp[row + 1]; j++) {
 			sum += as[j] * v[ja[j]];
 		}
 		result[row] += sum ;
 	}
+
 	/*
 	for (int i = 0; i < rows; i++) {
 		res[i] = 0;
