@@ -152,9 +152,9 @@ int main() {
 	result = (double *)malloc(m2.getRows() * sizeof(double));
 
 	for (int i = 0; i < m2.getRows(); i++) {
-		for (int i = 0; i < maxnz; i++) {
+		for (int j = 0; j < maxnz; j++) {
 			as[i * maxnz + j] = vAsEll[i][j];
-			ja[i * max + j] = vJaEll[i][j];
+			ja[i * maxnz + j] = vJaEll[i][j];
 		}
 	}
 	for (int i = 0; i < m2.getCols(); i++) {
