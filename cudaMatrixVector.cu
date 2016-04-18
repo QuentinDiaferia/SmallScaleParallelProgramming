@@ -47,7 +47,7 @@ void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double 
 }
 
 int main() {
-	double time_ini, time_end, time_cpu;
+	double time_ini, time_end, time_cpu, total_time;
 	char* file = "matrices/cage4.mtx";
 
 	// CONVERSION
@@ -109,17 +109,23 @@ int main() {
 
 	int BLOCK_DIM = 256;
 
-	/*StopWatchInterface* timer = 0;
-	sdkCreateTimer(&timer);
-	timer->start();*/
-	CSRMult << <m.getNz(), BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
+	total_time = 0;
+	for (int i = 0; i < 10; i++) {
 
-	cudaDeviceSynchronize();
-	//timer->stop();
+		time_ini = clock();
+
+		CSRMult << <m.getNz(), BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
+		cudaDeviceSynchronize();
+
+		time_end = clock();
+		total_time += (time_end - time_ini) / CLOCKS_PER_SEC;
+	}
+
+	total_time /= 10;
 
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
-	//cout << endl << "timer: " << timer->getTime() << endl;
+	cout << "FLOPS  : " << 2 * m.getNz() / total_time << endl << endl;
 
 	cudaFree(_irp);
 	cudaFree(_ja);
