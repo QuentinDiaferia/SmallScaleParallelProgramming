@@ -22,12 +22,12 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 }
 
 __global__ 
-void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *res, const int rows) {
+void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	if(i < rows)	{
 		double sum = 0;
 		for(int j = 0; j < maxnz; j++) {
-			sum += as[i * max + j]*x[ja[i * max + j]];
+			sum += as[i * maxnz + j] * v[ja[i * maxnz + j]];
 		}
 		result[i] = sum;
 	}
@@ -143,8 +143,6 @@ int main() {
 	// ELLPACK
 
 	int maxnz = m2.getMaxnz();
-	int *ja, *_ja;
-	double *as, *_as, *_v, *_result;
 	vector< vector<int> vJa = m2.getJa();
 	vector< vector<double> > vAs = m2.getAs();
 
