@@ -15,12 +15,12 @@ __global__
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *res, const int rows) {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
-	for (int i = 0; i < rows; i++) {
+	/*for (int i = 0; i < rows; i++) {
 		res[i] = 0;
 		for (int j = irp[i]; j < irp[i + 1] - 1; j++) {
 			res[i] += as[j] * v[ja[j]];
 		}
-	}
+	}*/
 }
 
 int main() {
@@ -103,10 +103,15 @@ int main() {
 	cudaFree(_v);
 	cudaFree(_result);
 
+	cout << "free irp..." << endl;
 	free(irp);
+	cout << "free ja..." << endl;
 	free(ja);
+	cout << "free as..." << endl;
 	free(as);
+	cout << "free v..." << endl;
 	free(v);
+	cout << "free result..." << endl;
 	free(result);
 
 	return 0;
