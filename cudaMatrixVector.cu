@@ -13,21 +13,11 @@ __global__
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
 	if (i < rows) {
-		double sum = 0;
 		for (int j = irp[i]; j < irp[i + 1]; j++) {
 			sum += as[j] * v[ja[j-1]];
 		}
-		result[i] += sum ;
+		result[i] = sum ;
 	}
-
-	/*
-	for (int i = 0; i < rows; i++) {
-		res[i] = 0;
-		for (int j = irp[i]; j < irp[i + 1] - 1; j++) {
-			res[i] += as[j] * v[ja[j]];
-		}
-	}
-	*/
 }
 
 __global__ 
@@ -82,8 +72,8 @@ int main() {
 	for (int i = 0; i < m.getRows() + 1; i++) {
 		irp[i] = vIrp[i];
 		if (i < m.getRows()) {
-			v[i] = 2;
-			result[i] = 0;
+			v[i] = 2.0;
+			result[i] = 0.0;
 		}
 	}
 	for (int i = 0; i < m.getNz(); i++) {
@@ -124,7 +114,7 @@ int main() {
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < m.getRows(); i++)
-		cout << v[i] << endl;
+		cout << result[i] << endl;
 
 	cout << endl << "average time  : " << total_time << endl;
 	cout << "FLOPS  : " << 2 * m.getNz() / total_time << endl << endl;
