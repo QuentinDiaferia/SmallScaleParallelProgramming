@@ -13,14 +13,36 @@ using namespace std;
 
 __global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *res, const int rows) {
-	int tid = threadIdx.x + blockIdx.x * blockDim.x;
+	int row = blockDim.x * blockIdx.x + threadIdx.x ;
+	if (row < rows) {
+		float sum = 0;
+		int start = irp[row];
+		int end = irp[row + 1];
 
-	/*for (int i = 0; i < rows; i++) {
+		for (int i = start; i < end; i++)
+			sum += as[i] * v[ja[i]];
+
+		result[row] += sum ;
+	}
+	/*
+	for (int i = 0; i < rows; i++) {
 		res[i] = 0;
 		for (int j = irp[i]; j < irp[i + 1] - 1; j++) {
 			res[i] += as[j] * v[ja[j]];
 		}
-	}*/
+	}
+	*/
+}
+
+__global__ 
+void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *res, const int rows) {
+	int tid = threadIdx.x + blockIdx.x * blockDim.x;
+	for (int i = 0; i < rows; i++) {
+		res[i] = 0;
+		for (int j = 0; j < maxnz; j++) {
+			res[i] += as[i][j] * v[ja[i][j]];
+		}
+	}
 }
 
 int main() {
@@ -43,8 +65,6 @@ int main() {
 
 	// CUDA
 
-	// -- CSR
-
 	int *irp, *ja;
 	int *_irp, *_ja;
 	double *as, *v, *result;
@@ -53,11 +73,14 @@ int main() {
 	vector<int> vJa = m.getJa();
 	vector<double> vAs = m.getAs();
 
+
 	irp = (int *)malloc((m.getRows() + 1 ) * sizeof(int));
 	ja = (int *)malloc(m.getNz() * sizeof(int));
 	as = (double *)malloc(m.getNz() * sizeof(double));
 	v = (double *)malloc(m.getRows() * sizeof(double));
 	result = (double *)malloc(m.getRows() * sizeof(double));
+
+	// Vector<> to simple arrays
 
 	for (int i = 0; i < m.getRows() + 1; i++) {
 		irp[i] = vIrp[i];
@@ -103,15 +126,10 @@ int main() {
 	cudaFree(_v);
 	cudaFree(_result);
 
-	cout << "free irp..." << endl;
 	free(irp);
-	cout << "free ja..." << endl;
 	free(ja);
-	cout << "free as..." << endl;
 	free(as);
-	cout << "free v..." << endl;
 	free(v);
-	cout << "free result..." << endl;
 	free(result);
 
 	return 0;
