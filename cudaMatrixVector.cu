@@ -6,15 +6,14 @@
 #include <cuda.h>
 
 #include <cuda_runtime.h>
-//#include <helper_cuda.h>
-//#include <helper_timer.h>
+#include <helper_cuda.h>
+#include <helper_timer.h>
 
 using namespace std;
 
 __global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int row = blockDim.x * blockIdx.x + threadIdx.x;
-	cout << "called" << endl;
 	if (row < rows) {
 		double sum = 0;
 		for (int j = irp[row]; j < irp[row + 1]; j++) {
