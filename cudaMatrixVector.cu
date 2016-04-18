@@ -76,10 +76,12 @@ int main() {
 			v[i] = 2.0;
 			result[i] = 0.0;
 		}
+		cout << irp[i] << endl;
 	}
 	for (int i = 0; i < m.getNz(); i++) {
 		ja[i] = vJa[i];
 		as[i] = vAs[i];
+		cout << ja[i] << " , " << as[i] << endl;
 	}
 
 	cudaMalloc((void**)&_irp, sizeof(int) * (m.getRows() + 1));
