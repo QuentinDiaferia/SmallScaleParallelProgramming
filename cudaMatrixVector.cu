@@ -65,7 +65,7 @@ int main() {
 	irp = (int *)malloc((m.getRows() + 1 ) * sizeof(int));
 	ja = (int *)malloc(m.getNz() * sizeof(int));
 	as = (double *)malloc(m.getNz() * sizeof(double));
-	v = (double *)malloc(m.getRows() * sizeof(double));
+	v = (double *)malloc(m.getCols() * sizeof(double));
 	result = (double *)malloc(m.getRows() * sizeof(double));
 
 	// Vector<> to simple arrays
@@ -78,10 +78,10 @@ int main() {
 		as[i] = vAs[i];
 	}
 	for (int i = 0; i < m.getCols(); i++) {
-		v[i] = 2;
+		v[i] = 2.0;
 	}
 	for (int i = 0; i < m.getRows(); i++) {
-		result[i] = 0;
+		result[i] = 0.0;
 	}
 
 	cudaMalloc((void**)&_irp, sizeof(int) * (m.getRows() + 1));
