@@ -85,13 +85,13 @@ int main() {
 
 	int BLOCK_DIM = 256;
 
-	StopWatchInterface* timer = 0;
+	/*StopWatchInterface* timer = 0;
 	sdkCreateTimer(&timer);
-	timer->start();
-	CSRMult << <nz, BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
+	timer->start();*/
+	CSRMult << <m.getNz(), BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
 
 	cudaDeviceSynchronize();
-	timer->stop();
+	//timer->stop();
 
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
