@@ -118,7 +118,9 @@ int main() {
 		cudaDeviceSynchronize();
 
 		time_end = clock();
-		total_time += (time_end - time_ini) / CLOCKS_PER_SEC;
+		time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
+		cout << "time cpu : " << time_cpu << endl;
+		total_time += time_cpu;
 	}
 
 	total_time /= 10;
