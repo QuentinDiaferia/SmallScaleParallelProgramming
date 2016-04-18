@@ -15,7 +15,7 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 	if (i < rows) {
 		double sum = 0;
 		for (int j = irp[i]; j < irp[i + 1]; j++) {
-			sum += as[j] * v[ja[j-1]];
+			sum += as[j] * v[ja[j - 1]];
 		}
 		result[i] = sum ;
 	}
@@ -23,7 +23,15 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 
 __global__ 
 void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *res, const int rows) {
-	/*
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	if(i < rows)	{
+		double sum = 0;
+		for(int j = 0; j < maxnz; j++) {
+			sum += as[i * max + j]*x[ja[i * max + j]];
+		}
+		result[i] = sum;
+	}
+/*
 	for (int i = 0; i < rows; i++) {
 		res[i] = 0;
 		for (int j = 0; j < maxnz; j++) {
@@ -126,6 +134,76 @@ int main() {
 	cudaFree(_result);
 
 	free(irp);
+	free(ja);
+	free(as);
+	free(v);
+	free(result);
+
+
+	// ELLPACK
+
+	int maxnz = m2.getMaxnz();
+	int *ja, *_ja;
+	double *as, *_as, *_v, *_result;
+	vector< vector<int> vJa = m2.getJa();
+	vector< vector<double> > vAs = m2.getAs();
+
+	ja = (int *)malloc((m2.getRows() * maxnz) * sizeof(int));
+	as = (double *)malloc((m2.getRows() * maxnz) * sizeof(double));
+	v = (double *)malloc(m2.getCols() * sizeof(double));
+	result = (double *)malloc(m2.getRows() * sizeof(double));
+
+	for (int i = 0; i < m2.getRows(); i++) {
+		for (int i = 0; i < maxnz; i++) {
+			as[i * maxnz + j] = vAs[i][j];
+			ja[i * max + j] = vJa[i][j];
+		}
+	}
+	for (int i = 0; i < m2.getCols(); i++) {
+		v[i] = 2.0;
+	}
+	for (int i = 0; i < m2.getRows(); i++) {
+		result[i] = 0.0;
+	}
+
+	cudaMalloc((void**)&_ja, sizeof(int) * m.getNz());
+	cudaMalloc((void**)&_as, sizeof(double) * m.getNz());
+	cudaMalloc((void**)&_v, sizeof(double) * m.getCols());
+	cudaMalloc((void**)&_result, sizeof(double) * m.getRows());
+
+	cudaMemcpy(_ja, ja, sizeof(int) * (m2.getRows() * maxnz) , cudaMemcpyHostToDevice);
+	cudaMemcpy(_as, as, sizeof(double) * (m2.getRows() * maxnz), cudaMemcpyHostToDevice);
+	cudaMemcpy(_v, v, sizeof(double) * m.getCols(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
+
+	int BLOCK_DIM = 128;
+	const dim3 GRID_DIM =((m2.getRows() - 1) / 128 + 1, (m2.getCols() - 1) / 128 + 1);
+
+	total_time = 0.0;
+
+	time_ini = clock();
+
+	ELLPACKMult<<<GRID_DIM, BLOCK_DIM>>>(maxnz, _ja, as, _v, _result, m2.getRows());
+	cudaDeviceSynchronize();
+
+	time_end = clock();
+	time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
+		
+
+	cudaMemcpy(result, _result, sizeof(double) * m.getCols(), cudaMemcpyDeviceToHost);
+
+	for (int i = 0; i < m.getRows(); i++)
+		cout << result[i] << endl;
+
+	cout << "FLOPS  : " << 2 * m.getNz() / time_cpu << endl << endl;
+
+
+
+	cudaFree(_ja);
+	cudaFree(_as);
+	cudaFree(_v);
+	cudaFree(_result);
+
 	free(ja);
 	free(as);
 	free(v);
