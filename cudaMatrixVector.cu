@@ -104,7 +104,7 @@ int main() {
 	cudaFree(_result);
 
 	cout << "free irp..." << endl;
-	free(irp);
+	//free(irp);
 	cout << "free ja..." << endl;
 	free(ja);
 	cout << "free as..." << endl;
