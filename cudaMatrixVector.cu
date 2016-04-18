@@ -3,6 +3,7 @@
 #include "ELLPACKMatrix.h"
 #include "mmio.h"
 #include <ctime>
+#include <cuda.h>
 
 #include <cuda_runtime.h>
 #include <helper_cuda.h>
