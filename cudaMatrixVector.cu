@@ -106,7 +106,7 @@ int main() {
 
 	int BLOCK_DIM = 256;
 
-	total_time = 0;
+	total_time = 0.0;
 	for (int i = 0; i < 10; i++) {
 
 		time_ini = clock();
