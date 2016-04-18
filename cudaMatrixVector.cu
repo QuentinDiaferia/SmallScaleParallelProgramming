@@ -45,7 +45,7 @@ void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double 
 
 int main() {
 	double time_ini, time_end, time_cpu, total_time;
-	char* file = "matrices/cage4.mtx";
+	char* file = "matrices/cavity10.mtx";
 
 	// CONVERSION
 
@@ -109,13 +109,13 @@ int main() {
 	total_time = 0;
 	for (int i = 0; i < 10; i++) {
 
-		time_ini = myCPUTimer();
+		time_ini = clock();
 
 		CSRMult << <m.getNz(), BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
 		cudaDeviceSynchronize();
 
-		time_end = myCPUTimer();
-		time_cpu = (time_end - time_ini);
+		time_end = clock();
+		time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
 		cout << "time cpu : " << time_cpu << endl;
 		total_time += time_cpu;
 	}
