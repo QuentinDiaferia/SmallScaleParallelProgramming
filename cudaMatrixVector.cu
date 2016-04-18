@@ -72,28 +72,28 @@ int main() {
 
 	for (int i = 0; i < m.getRows() + 1; i++) {
 		irp[i] = vIrp[i];
-		if (i < m.getRows()) {
-			v[i] = 2.0;
-			result[i] = 0.0;
-		}
-		cout << irp[i] << endl;
 	}
 	for (int i = 0; i < m.getNz(); i++) {
 		ja[i] = vJa[i];
 		as[i] = vAs[i];
-		cout << ja[i] << " , " << as[i] << endl;
+	}
+	for (int i = 0; i < m.getCols(); i++) {
+		v[i] = 2;
+	}
+	for (int i = 0; i < m.getRows(); i++) {
+		result[i] = 0;
 	}
 
 	cudaMalloc((void**)&_irp, sizeof(int) * (m.getRows() + 1));
 	cudaMalloc((void**)&_ja, sizeof(int) * m.getNz());
 	cudaMalloc((void**)&_as, sizeof(double) * m.getNz());
-	cudaMalloc((void**)&_v, sizeof(double) * m.getRows());
+	cudaMalloc((void**)&_v, sizeof(double) * m.getCols());
 	cudaMalloc((void**)&_result, sizeof(double) * m.getRows());
 
 	cudaMemcpy(_irp, irp, sizeof(int) * (m.getRows() + 1), cudaMemcpyHostToDevice);
 	cudaMemcpy(_ja, ja, sizeof(int) * m.getNz(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_as, as, sizeof(double) * m.getNz(), cudaMemcpyHostToDevice);
-	cudaMemcpy(_v, v, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_v, v, sizeof(double) * m.getCols(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
 	int BLOCK_DIM = 128;
@@ -110,7 +110,7 @@ int main() {
 	time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
 		
 
-	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
+	cudaMemcpy(result, _result, sizeof(double) * m.getCols(), cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < m.getRows(); i++)
 		cout << result[i] << endl;
