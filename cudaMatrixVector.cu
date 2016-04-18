@@ -61,8 +61,10 @@ int main() {
 
 	for (int i = 0; i < m.getRows() + 1; i++) {
 		irp[i] = vIrp[i];
-		v[i] = 2;
-		result[i] = 0;
+		if (i < m.getRows()) {
+			v[i] = 2;
+			result[i] = 0;
+		}
 	}
 	for (int i = 0; i < m.getNz(); i++) {
 		ja[i] = vJa[i];
