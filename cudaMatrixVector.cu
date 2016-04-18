@@ -45,7 +45,7 @@ void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double 
 
 int main() {
 	double time_ini, time_end, time_cpu, total_time;
-	char* file = "matrices/cavity10.mtx";
+	char* file = "matrices/cage4.mtx";
 
 	// CONVERSION
 
@@ -124,8 +124,13 @@ int main() {
 
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
+	for (int i = 0; i < m.getRows(); i++)
+		cout << result[i] << endl;
+
 	cout << endl << "average time  : " << total_time << endl;
 	cout << "FLOPS  : " << 2 * m.getNz() / total_time << endl << endl;
+
+
 
 	cudaFree(_irp);
 	cudaFree(_ja);
