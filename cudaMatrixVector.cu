@@ -104,7 +104,7 @@ int main() {
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
 	int BLOCK_DIM = 128;
-	const dim3 GRID_DIM =((m.getRows() - 1)/128 + 1, (m.getCols() - 1)/128 + 1);
+	int GRID_DIM = m.getRows() / 128 + 1;
 
 	total_time = 0.0;
 	for (int i = 0; i < 10; i++) {
