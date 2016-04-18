@@ -36,13 +36,14 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 
 __global__ 
 void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double *v, double *res, const int rows) {
-	int tid = threadIdx.x + blockIdx.x * blockDim.x;
+	/*
 	for (int i = 0; i < rows; i++) {
 		res[i] = 0;
 		for (int j = 0; j < maxnz; j++) {
 			res[i] += as[i][j] * v[ja[i][j]];
 		}
 	}
+	*/
 }
 
 int main() {
