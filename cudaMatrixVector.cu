@@ -103,14 +103,15 @@ int main() {
 	cudaMemcpy(_v, v, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
-	int BLOCK_DIM = 256;
+	int BLOCK_DIM = 128;
+	const dim3 GRID_DIM =((m.getRows() - 1)/128 + 1,(m.getCols() - 1)/128 + 1);
 
 	total_time = 0.0;
 	for (int i = 0; i < 10; i++) {
 
 		time_ini = clock();
 
-		CSRMult<<<m.getRows(), BLOCK_DIM>>>(_irp, _ja, as, _v, _result, m.getRows());
+		CSRMult<<<GRID_DIM, BLOCK_DIM>>>(_irp, _ja, as, _v, _result, m.getRows());
 		cudaDeviceSynchronize();
 
 		time_end = clock();
