@@ -43,9 +43,6 @@ int main() {
 	time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
 	cout << "Conversion to ELLPACK : " << time_cpu << endl;
 
-	v1.resize(m.getRows(), 2);
-	v1.resize(m2.getRows(), 2);
-
 	// CUDA
 
 	// -- CSR
@@ -74,17 +71,17 @@ int main() {
 		as[i] = vAs[i];
 	}
 
-	checkCudaErrors(cudaMalloc((void**)&_irp, sizeof(int) * m.getRows()));
-	checkCudaErrors(cudaMalloc((void**)&_ja, sizeof(int) * m.getNz()));
-	checkCudaErrors(cudaMalloc((void**)&_as, sizeof(double) * m.getNz()));
-	checkCudaErrors(cudaMalloc((void**)&_v, sizeof(double) * m.getRows()));
-	checkCudaErrors(cudaMalloc((void**)&_result, sizeof(double) * m.getRows()));
+	cudaMalloc((void**)&_irp, sizeof(int) * m.getRows());
+	cudaMalloc((void**)&_ja, sizeof(int) * m.getNz());
+	cudaMalloc((void**)&_as, sizeof(double) * m.getNz());
+	cudaMalloc((void**)&_v, sizeof(double) * m.getRows());
+	cudaMalloc((void**)&_result, sizeof(double) * m.getRows());
 
-	checkCudaErrors(cudaMemcpy(_irp, irp, sizeof(int) * m.getRows(), cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy(_ja, ja, sizeof(int) * m.getNz(), cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy(_as, as, sizeof(double) * m.getNz(), cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy(_v, v, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice));
+	cudaMemcpy(_irp, irp, sizeof(int) * m.getRows(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_ja, ja, sizeof(int) * m.getNz(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_as, as, sizeof(double) * m.getNz(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_v, v, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
+	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
 	int BLOCK_DIM = 256;
 
@@ -93,10 +90,10 @@ int main() {
 	timer->start();
 	CSRMult << <nz, BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
 
-	checkCudaErrors(cudaDeviceSynchronize());
+	cudaDeviceSynchronize();
 	timer->stop();
 
-	checkCudaErrors(cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost));
+	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
 	printf("\n");
 	cout << "timer: " << timer->getTime() << std::endl;
