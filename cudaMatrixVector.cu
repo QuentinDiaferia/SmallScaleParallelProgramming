@@ -174,14 +174,14 @@ int main() {
 	cudaMemcpy(_v, v, sizeof(double) * m.getCols(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
-	int BLOCK_DIM = 128;
-	const dim3 GRID_DIM =((m2.getRows() - 1) / 128 + 1, (m2.getCols() - 1) / 128 + 1);
+	BLOCK_DIM = 128;
+	const dim3 GRID_DIM_ELL = ((m2.getRows() - 1) / 128 + 1, (m2.getCols() - 1) / 128 + 1);
 
 	total_time = 0.0;
 
 	time_ini = clock();
 
-	ELLPACKMult<<<GRID_DIM, BLOCK_DIM>>>(maxnz, _ja, as, _v, _result, m2.getRows());
+	ELLPACKMult<<<GRID_DIM_ELL, BLOCK_DIM>>>(maxnz, _ja, as, _v, _result, m2.getRows());
 	cudaDeviceSynchronize();
 
 	time_end = clock();
