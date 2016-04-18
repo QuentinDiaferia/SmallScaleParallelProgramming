@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include "mmio.h"
 #include <omp.h>
 
