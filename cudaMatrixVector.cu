@@ -98,27 +98,22 @@ int main() {
 	int GRID_DIM = m.getRows() / 128 + 1;
 
 	total_time = 0.0;
-	for (int i = 0; i < 10; i++) {
 
-		time_ini = clock();
+	time_ini = clock();
 
-		CSRMult<<<GRID_DIM, BLOCK_DIM>>>(_irp, _ja, as, _v, _result, m.getRows());
-		cudaDeviceSynchronize();
+	CSRMult<<<GRID_DIM, BLOCK_DIM>>>(_irp, _ja, as, _v, _result, m.getRows());
+	cudaDeviceSynchronize();
 
-		time_end = clock();
-		time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
-		total_time += time_cpu;
-	}
-
-	total_time /= 10;
+	time_end = clock();
+	time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
+		
 
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
 	for (int i = 0; i < m.getRows(); i++)
 		cout << result[i] << endl;
 
-	cout << endl << "average time  : " << total_time << endl;
-	cout << "FLOPS  : " << 2 * m.getNz() / total_time << endl << endl;
+	cout << "FLOPS  : " << 2 * m.getNz() / total_cpu << endl << endl;
 
 
 
