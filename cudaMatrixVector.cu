@@ -13,15 +13,12 @@ using namespace std;
 
 __global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
-	int row = blockDim.x * blockIdx.x + threadIdx.x ;
+	int row = blockDim.x * blockIdx.x + threadIdx.x;
 	if (row < rows) {
-		float sum = 0;
-		int start = irp[row];
-		int end = irp[row + 1];
-
-		for (int i = start; i < end; i++)
-			sum += as[i] * v[ja[i]];
-
+		double sum = 0;
+		for (int j = irp[row]; j < irp[row + 1]; j++) {
+			sum += as[j] * v[ja[j]];
+		}
 		result[row] += sum ;
 	}
 	/*
@@ -47,7 +44,7 @@ void ELLPACKMult(const int maxnz, const int* ja, const double* as, const double 
 }
 
 int main() {
-	double time_ini, time_end, time_cpu, total_time;
+	clock_t time_ini, time_end, time_cpu, total_time;
 	char* file = "matrices/cage4.mtx";
 
 	// CONVERSION
