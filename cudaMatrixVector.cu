@@ -12,7 +12,7 @@
 using namespace std;
 
 __global__ 
-void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *res, const int rows) {
+void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int row = blockDim.x * blockIdx.x + threadIdx.x ;
 	if (row < rows) {
 		float sum = 0;
