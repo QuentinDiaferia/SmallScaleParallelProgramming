@@ -124,7 +124,7 @@ vector<double> ELLPACKMatrix::mult(const vector<double> v) {
 
 vector<double> ELLPACKMatrix::OpenMPmult(const vector<double> v, int nthreads) {
 	vector<double> res(rows);
-	int i, j;
+	/*int i, j;
 	omp_set_num_threads(nthreads);
 	#pragma omp parallel for \
 	private (i, j) shared (res) \
@@ -134,6 +134,6 @@ vector<double> ELLPACKMatrix::OpenMPmult(const vector<double> v, int nthreads) {
 		for (j = 0; j < maxnz; j++) {
 			res[i] += as[i][j] * v[ja[i][j]];
 		}
-	}
+	}*/
 	return res;
 }

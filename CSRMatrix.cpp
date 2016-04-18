@@ -127,7 +127,7 @@ vector<double> CSRMatrix::mult(const vector<double> v) {
 
 vector<double> CSRMatrix::OpenMPmult(const vector<double> v, int nthreads) {
 	vector<double> res(rows);
-	int i, j;
+	/*int i, j;
 
 	omp_set_num_threads(nthreads);
 	#pragma omp parallel for \
@@ -138,6 +138,6 @@ vector<double> CSRMatrix::OpenMPmult(const vector<double> v, int nthreads) {
 		for (j = irp[i]; j < irp[i + 1] - 1; j++) {
 			res[i] += as[j] * v[ja[j]];
 		}
-	}
+	}*/
 	return res;
 }
