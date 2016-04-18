@@ -113,7 +113,7 @@ int main() {
 	for (int i = 0; i < m.getRows(); i++)
 		cout << result[i] << endl;
 
-	cout << "FLOPS  : " << 2 * m.getNz() / total_cpu << endl << endl;
+	cout << "FLOPS  : " << 2 * m.getNz() / time_cpu << endl << endl;
 
 
 
