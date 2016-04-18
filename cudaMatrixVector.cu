@@ -31,14 +31,6 @@ void ELLPACKMult(const int maxnz, const int *ja, const double *as, const double 
 		}
 		result[i] = sum;
 	}
-/*
-	for (int i = 0; i < rows; i++) {
-		res[i] = 0;
-		for (int j = 0; j < maxnz; j++) {
-			res[i] += as[i][j] * v[ja[i][j]];
-		}
-	}
-	*/
 }
 
 int main() {
@@ -172,14 +164,14 @@ int main() {
 	cudaMemcpy(_v, v, sizeof(double) * m.getCols(), cudaMemcpyHostToDevice);
 	cudaMemcpy(_result, result, sizeof(double) * m.getRows(), cudaMemcpyHostToDevice);
 
-	BLOCK_DIM = 128;
+	const dim3 BLOCK_DIM_ELL(128,128);
 	const dim3 GRID_DIM_ELL = ((m2.getRows() - 1) / 128 + 1, (m2.getCols() - 1) / 128 + 1);
 
 	total_time = 0.0;
 
 	time_ini = clock();
 
-	ELLPACKMult<<<GRID_DIM_ELL, BLOCK_DIM>>>(maxnz, _ja, as, _v, _result, m2.getRows());
+	ELLPACKMult<<<GRID_DIM_ELL, BLOCK_DIM_ELL>>>(maxnz, _ja, as, _v, _result, m2.getRows());
 	cudaDeviceSynchronize();
 
 	time_end = clock();
