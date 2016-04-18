@@ -13,8 +13,8 @@ using namespace std;
 
 __host__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
-
-	for (int row = 0; i < rows; i++){
+	int row = blockDim.x * blockIdx.x + threadIdx.x;
+	if (row < rows) {
 		double sum = 0;
 		for (int j = irp[row]; j < irp[row + 1]; j++) {
 			sum += as[j] * v[ja[j]];
@@ -112,7 +112,7 @@ int main() {
 
 		time_ini = clock();
 
-		CSRMult << <m.getNz(), BLOCK_DIM >> >(_irp, _ja, as, _v, _result, m.getRows());
+		CSRMult<<<m.getRows(), BLOCK_DIM>>>(_irp, _ja, as, _v, _result, m.getRows());
 		cudaDeviceSynchronize();
 
 		time_end = clock();
