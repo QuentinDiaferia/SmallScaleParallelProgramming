@@ -93,9 +93,7 @@ int main() {
 
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
-	printf("\n");
-	//cout << "timer: " << timer->getTime() << std::endl;
-	printf("\n");
+	//cout << endl << "timer: " << timer->getTime() << endl;
 
 	cudaFree(_irp);
 	cudaFree(_ja);
