@@ -14,6 +14,7 @@ using namespace std;
 __global__ 
 void CSRMult(const int *irp, const int* ja, const double* as, const double *v, double *result, const int rows) {
 	int row = blockDim.x * blockIdx.x + threadIdx.x;
+	cout << "called" << endl;
 	if (row < rows) {
 		double sum = 0;
 		for (int j = irp[row]; j < irp[row + 1]; j++) {
@@ -117,7 +118,6 @@ int main() {
 
 		time_end = clock();
 		time_cpu = (time_end - time_ini) / CLOCKS_PER_SEC;
-		cout << "time cpu : " << time_cpu << endl;
 		total_time += time_cpu;
 	}
 
