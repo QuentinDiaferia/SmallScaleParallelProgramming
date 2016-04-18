@@ -26,7 +26,6 @@ void CSRMult(const int *irp, const int* ja, const double* as, const double *v, d
 
 int main() {
 	double time_ini, time_end, time_cpu;
-	double totalTime;
 	char* file = "matrices/cage4.mtx";
 
 	// CONVERSION
@@ -96,7 +95,7 @@ int main() {
 	cudaMemcpy(result, _result, sizeof(double) * m.getRows(), cudaMemcpyDeviceToHost);
 
 	printf("\n");
-	cout << "timer: " << timer->getTime() << std::endl;
+	//cout << "timer: " << timer->getTime() << std::endl;
 	printf("\n");
 
 	cudaFree(_irp);
